@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">BucketListCurator</string>
+    <string name="add">add</string>
+    <string-array name="categories">
+        <item>Arts</item>
+        <item>Music</item>
+        <item>Adventure</item>
+        <item>Food</item>
+
+    </string-array>
+
+</resources>
