@@ -98,7 +98,7 @@ public class ListActivity extends AppCompatActivity {
                 }
 
 
-
+// some comment
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
