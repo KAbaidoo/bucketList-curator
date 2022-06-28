@@ -1,31 +1,32 @@
 package com.example.bucketlistcurator;
 
+import com.google.firebase.firestore.DocumentId;
+
+import java.util.Date;
+import java.util.List;
+
+
 public class Event {
+    @DocumentId
     private String id;
     private String title;
-    private String description;
-    private String location;
     private String venue;
-    private float rating;
-    private String curator;
+    private String time;
+    private Date posted;
+    private Date dateTime; // the date and time of event
+    private List <String> tags;
+    private double rating;
+    private long price;
+    private String info;
     private String imageResource;
-    private float price;
+    private String date;
+    private String curator;
     private String category;
 
     public Event() {
     }
 
-    public Event(String id, String title, String description, String location, String venue, float rating, String curator, String imageResource, float price, String category) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.location = location;
-        this.venue = venue;
-        this.rating = rating;
-        this.curator = curator;
-        this.imageResource = imageResource;
-        this.price = price;
-        this.category = category;
+    public Event(String venue, String id, String title, String time, Date posted, Date dateTime, List<String> tags, long price, double rating, String info, String imageResource, String date, String curator, String category) {
     }
 
     public String getId() {
@@ -44,22 +45,6 @@ public class Event {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getVenue() {
         return venue;
     }
@@ -68,20 +53,60 @@ public class Event {
         this.venue = venue;
     }
 
-    public float getRating() {
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public Date getPosted() {
+        return posted;
+    }
+
+    public void setPosted(Date posted) {
+        this.posted = posted;
+    }
+
+    public Date getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
-    public String getCurator() {
-        return curator;
+    public long getPrice() {
+        return price;
     }
 
-    public void setCurator(String curator) {
-        this.curator = curator;
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public String getImageResource() {
@@ -92,12 +117,20 @@ public class Event {
         this.imageResource = imageResource;
     }
 
-    public float getPrice() {
-        return price;
+    public String getDate() {
+        return date;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getCurator() {
+        return curator;
+    }
+
+    public void setCurator(String curator) {
+        this.curator = curator;
     }
 
     public String getCategory() {

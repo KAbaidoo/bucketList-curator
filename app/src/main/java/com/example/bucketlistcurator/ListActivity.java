@@ -1,6 +1,6 @@
 package com.example.bucketlistcurator;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,15 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +33,6 @@ public class ListActivity extends AppCompatActivity {
     FloatingActionButton fab;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,31 +45,25 @@ public class ListActivity extends AppCompatActivity {
         //get recyclerView properties
         mRecyclerView.setHasFixedSize(true);
 
-        fab  = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
 
         //init progress dialog
         pd = new ProgressDialog(this);
 
 
-
-
         //adapter
 
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false );
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         //set adapter to recyclerView
-
 
 
         //show data in recyclerView
         showData();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        fab.setOnClickListener(view -> {
             startActivity(new Intent(ListActivity.this, MainActivity.class));
             finish();
-            }
         });
     }
 
@@ -84,28 +74,37 @@ public class ListActivity extends AppCompatActivity {
         pd.show();
 
 
-        db.collection("documents").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        db.collection("events").get().addOnCompleteListener(task -> {
             //called when data is received
-                pd.dismiss();
-                for (DocumentSnapshot doc: task.getResult()){
-                    Event event = new Event(doc.getString("id"),doc.getString("title"),doc.getString("description"),"","",4,"","",40,"");
-                    eventList.add(event);
+            pd.dismiss();
+            if(task.isSuccessful()){
+                for (DocumentSnapshot doc : task.getResult()) {
+
+//                Event event = new Event(doc.getId(),
+//                        doc.getString("title"),
+//                        doc.getString("venue"),
+//                        doc.getString("time"),
+//                        doc.getDate("posted"),
+//                        doc.getDate("dateTime"),
+//                        ((List<String>) doc.get("tags")),
+//                        doc.getLong("rating"),
+//                        doc.getLong("price"),
+//                        "","","","","");
+//                eventList.add(event);
+
+                    eventList.add(doc.toObject(Event.class));
                     adapter = new CustomAdapter(ListActivity.this, eventList);
                     mRecyclerView.setAdapter(adapter);
 
                 }
+            }
+
 
 
 // some comment
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+        }).addOnFailureListener(e -> {
             //called when there is any error in retrieving data
-                pd.dismiss();
-            }
+            pd.dismiss();
         });
     }
 }

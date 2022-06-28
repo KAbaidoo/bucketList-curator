@@ -1,30 +1,28 @@
 package com.example.bucketlistcurator;
 
-import androidx.annotation.NonNull;
+
+import static java.lang.Long.getLong;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.DocumentId;
-import com.google.firebase.firestore.FieldValue;
+
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -32,9 +30,9 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     //    Views
-    EditText mTitle, mDescription, mLocation, mVenue;
-    Button mSaveBtn,mListBtn;
-    String category;
+    EditText mTitle, mDescription, mVenue, mPrice, mDate, mTime;
+    Button mSaveBtn, mListBtn;
+    String category, rating;
 
     //    Progress dialog
     ProgressDialog pd;
@@ -50,18 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
 //        actionbar and its title
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle("Add Event");
-
-
-
         initializeViews();
-
 
     }
 
     private void initializeViews() {
 //        grab the views
-        Spinner categorySpinner = (Spinner) findViewById(R.id.category_spinner);
+        Spinner categorySpinner = findViewById(R.id.category_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -70,7 +65,25 @@ public class MainActivity extends AppCompatActivity {
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                 category = parent.getItemAtPosition(position).toString();
+                category = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Spinner ratingSpinner = findViewById(R.id.rating_spinner);
+        ArrayAdapter<CharSequence> mAdapter = ArrayAdapter.createFromResource(this,
+                R.array.ratings, android.R.layout.simple_spinner_item);
+        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ratingSpinner.setAdapter(mAdapter);
+
+        ratingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+          rating =  parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -83,8 +96,11 @@ public class MainActivity extends AppCompatActivity {
         mDescription = findViewById(R.id.editText_description);
         mSaveBtn = findViewById(R.id.button_save);
         mListBtn = findViewById(R.id.button_list);
-        mLocation = findViewById(R.id.editText_location);
-        mVenue = findViewById(R.id.editText_venue);
+        mVenue = findViewById(R.id.et_venue);
+        mPrice = findViewById(R.id.et_price);
+        mDate = findViewById(R.id.et_date);
+        mTime = findViewById(R.id.et_time);
+
 
 //        create progress dialog
         pd = new ProgressDialog(this);
@@ -93,31 +109,32 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
 //        click button to upload
-        mSaveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = mTitle.getText().toString().trim();
-                String description = mDescription.getText().toString().trim();
-                String location = mLocation.getText().toString().trim();
-                String venue = mVenue.getText().toString().trim();
-                uploadData(title, description, location,venue);
-            }
+        mSaveBtn.setOnClickListener(v -> {
+            String title = mTitle.getText().toString().trim();
+            String description = mDescription.getText().toString().trim();
+            String venue = mVenue.getText().toString().trim();
+            String price = mPrice.getText().toString().trim();
+            float floatPrice = Float.parseFloat(price);
+            String date = mDate.getText().toString().trim();
+            String time = mTime.getText().toString().trim();
+
+
+
+
+            uploadData(title, description, venue, category, floatPrice, date, time);
         });
 
-        mListBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ListActivity.class);
-                startActivity(i);
-                finish();
+        mListBtn.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, ListActivity.class);
+            startActivity(i);
+            finish();
 
-            }
         });
 
     }
 
 
-    private void uploadData(String title, String description, String location, String venue) {
+    private void uploadData(String title, String description, String venue,String category, float price, String date, String time) {
 
 //        set title of progress bar
         pd.setTitle("Adding Data ....");
@@ -129,37 +146,31 @@ public class MainActivity extends AppCompatActivity {
 
         doc.put("id", id);
         doc.put("title", title);
-        doc.put("description", description);
-        doc.put("location", location);
+        doc.put("info", description);
         doc.put("venue", venue);
-        doc.put("rating", 4.0);
-        doc.put("curator", "curator name");
-        doc.put("imageResource", "https://firebasestorage.googleapis.com/v0/b/bucketlist-10f69.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=7b4942c7-a66e-4e13-bda5-bcc10c605207");
-        doc.put("price", description);
-        doc.put("tags", id);
+        doc.put("curator", "Eunyfred events");
+        doc.put("time", time);
+        doc.put("date", date);
+        doc.put("posted",new Timestamp(new Date()) );
+//        doc.put("tags", tags);
+        doc.put("rating",Double.parseDouble(rating));
+//        doc.put("imageResource", "https://firebasestorage.googleapis.com/v0/b/bucketlist-10f69.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=7b4942c7-a66e-4e13-bda5-bcc10c605207");
+        doc.put("price", price);
         doc.put("category", category);
 
 //        add this to data
-        db.collection("documents").document(id).set(doc)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-//                  this will be called when data is added successfully
+        db.collection("documents")
+                .add(doc)
+                .addOnSuccessListener(documentReference -> {
+                    pd.dismiss();
+                    Toast.makeText(MainActivity.this, "Uploading...", Toast.LENGTH_SHORT).show();
 
-
-                        pd.dismiss();
-                        Toast.makeText(MainActivity.this, "Uploading...", Toast.LENGTH_SHORT);
-
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                })
+                .addOnFailureListener(e -> {
 //                  this will be called when there is any error adding data
 
-                pd.dismiss();
-                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
-            }
-        });
+                    pd.dismiss();
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

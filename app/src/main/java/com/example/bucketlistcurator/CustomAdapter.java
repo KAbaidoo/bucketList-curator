@@ -37,7 +37,7 @@ public class CustomAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                 //show data in toast
                 String title = eventList.get(position).getTitle();
-                String description = eventList.get(position).getDescription();
+                String description = eventList.get(position).getInfo();
                // Toast.makeText(listActivity, title+"\n"+description,Toast.LENGTH_SHORT).show();
                 Snackbar.make(view, title+"\n"+description , Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -56,7 +56,7 @@ public class CustomAdapter extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     //bind views / set data
         holder.mTitle.setText(eventList.get(position).getTitle());
-        holder.mDescription.setText(eventList.get(position).getDescription());
+        holder.mDescription.setText(eventList.get(position).getInfo());
     }
 
     @Override
