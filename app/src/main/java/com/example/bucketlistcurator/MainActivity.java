@@ -3,27 +3,36 @@ package com.example.bucketlistcurator;
 
 import static java.lang.Long.getLong;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     EditText mTitle, mDescription, mVenue, mPrice, mDate, mTime;
     Button mSaveBtn, mListBtn;
     String category, rating;
+    ChipGroup mChipGroup;
 
     //    Progress dialog
     ProgressDialog pd;
@@ -83,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         ratingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-          rating =  parent.getItemAtPosition(position).toString();
+                rating = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -100,16 +110,46 @@ public class MainActivity extends AppCompatActivity {
         mPrice = findViewById(R.id.et_price);
         mDate = findViewById(R.id.et_date);
         mTime = findViewById(R.id.et_time);
+        mChipGroup = findViewById(R.id.chip_group);
+
+
+
+        mChipGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+
+            }
+        });
+
+//        final int childCount = mChipGroup.getChildCount();
+//        List<String> tags = new ArrayList<>();
+//        for (int i = 0; i < childCount; i++) {
+//            Chip chip = (Chip) mChipGroup.getChildAt(i);
+//
+//            chip.setOnClickListener(v -> {
+//                if (chip.isChecked()) {
+//                    chip.setChecked(false);
+////                    TextView tv = (TextView) chip.getChildAt(0);
+//                    tags.remove(chip.getText().toString().toLowerCase(Locale.ROOT));
+//                    Log.d("MainActivity", String.valueOf(tags));
+//                } else {
+//                    chip.setChecked(true);
+////                    TextView tv = chip.getChildAt(0);
+//                    tags.add(chip.getText().toString().toLowerCase(Locale.ROOT));
+//                    Log.d("MainActivity", String.valueOf(tags));
+//                }
+//            });
+//        }
 
 
 //        create progress dialog
         pd = new ProgressDialog(this);
-
 //        Firestore
         db = FirebaseFirestore.getInstance();
 
 //        click button to upload
         mSaveBtn.setOnClickListener(v -> {
+
             String title = mTitle.getText().toString().trim();
             String description = mDescription.getText().toString().trim();
             String venue = mVenue.getText().toString().trim();
@@ -117,8 +157,6 @@ public class MainActivity extends AppCompatActivity {
             float floatPrice = Float.parseFloat(price);
             String date = mDate.getText().toString().trim();
             String time = mTime.getText().toString().trim();
-
-
 
 
             uploadData(title, description, venue, category, floatPrice, date, time);
@@ -134,7 +172,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void uploadData(String title, String description, String venue,String category, float price, String date, String time) {
+    private void uploadData(String title, String description, String venue, String category, float price, String date, String time) {
+
+        List<String> tags = new ArrayList<>();
+               for (int id : mChipGroup.getCheckedChipIds()){
+                   Chip chip = findViewById(id);
+                   tags.add(chip.getText().toString().toLowerCase(Locale.ROOT));
+                   Log.d("MainActivity", String.valueOf(tags));
+               }
 
 //        set title of progress bar
         pd.setTitle("Adding Data ....");
@@ -151,9 +196,9 @@ public class MainActivity extends AppCompatActivity {
         doc.put("curator", "Eunyfred events");
         doc.put("time", time);
         doc.put("date", date);
-        doc.put("posted",new Timestamp(new Date()) );
-//        doc.put("tags", tags);
-        doc.put("rating",Double.parseDouble(rating));
+        doc.put("posted", new Timestamp(new Date()));
+        doc.put("tags", tags);
+        doc.put("rating", Double.parseDouble(rating));
 //        doc.put("imageResource", "https://firebasestorage.googleapis.com/v0/b/bucketlist-10f69.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=7b4942c7-a66e-4e13-bda5-bcc10c605207");
         doc.put("price", price);
         doc.put("category", category);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -130,44 +131,77 @@
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="8dp">
 
             <com.google.android.material.chip.Chip
+                android:id="@+id/chip_art"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                app:checkedIconEnabled="true"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="item1" />
+                app:chipStrokeColor="@color/purple_200"
+                app:chipStrokeWidth="1dp"
+                android:text="Art" />
             <com.google.android.material.chip.Chip
+                android:id="@+id/chip_food"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/purple_200"
+                app:chipStrokeWidth="1dp"
+                android:text="Food" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_nature"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="item2" />
-            <com.google.android.material.chip.Chip
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/purple_200"
+                app:chipStrokeWidth="1dp"
+                android:text="Nature" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_travel"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="item3" />
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="item4" />
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="item5" />
-            <com.google.android.material.chip.Chip
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/purple_200"
+                app:chipStrokeWidth="1dp"
+                android:text="Travel" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_music"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="item6" />
+                app:chipStrokeColor="@color/purple_200"
+                app:checkedIconEnabled="true"
+                app:chipStrokeWidth="1dp"
+                android:text="Music" />
             <com.google.android.material.chip.Chip
+                android:id="@+id/chip_fashion"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                app:chipStrokeColor="@color/purple_200"
+                app:checkedIconEnabled="true"
+                app:chipStrokeWidth="1dp"
+                android:text="Fashion" />
 
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="item7" />
             <com.google.android.material.chip.Chip
+                android:id="@+id/chip_hiking"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="item8" />
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/purple_200"
+                app:chipStrokeWidth="1dp"
+                android:text="Hiking" />
+
 
         </com.google.android.material.chip.ChipGroup>
 
