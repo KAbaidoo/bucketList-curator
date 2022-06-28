@@ -3,12 +3,16 @@ package com.example.bucketlistcurator;
 
 import static java.lang.Long.getLong;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,8 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
     //    Views
     EditText mTitle, mDescription, mVenue, mPrice, mDate, mTime;
-    Button mSaveBtn, mListBtn;
-    String category, rating;
+    TextView imgUrl;
+    Button mSaveBtn, mListBtn, mUploadBtn;
+    String category, rating, downloadUri;
     ChipGroup mChipGroup;
 
     //    Progress dialog
@@ -103,16 +108,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mTitle = findViewById(R.id.editText_title);
+        imgUrl = findViewById(R.id.tv_imageUrl);
         mDescription = findViewById(R.id.editText_description);
         mSaveBtn = findViewById(R.id.button_save);
         mListBtn = findViewById(R.id.button_list);
+        mUploadBtn = findViewById(R.id.btn_upload);
         mVenue = findViewById(R.id.et_venue);
         mPrice = findViewById(R.id.et_price);
         mDate = findViewById(R.id.et_date);
         mTime = findViewById(R.id.et_time);
         mChipGroup = findViewById(R.id.chip_group);
-
-
 
         mChipGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
             @Override
@@ -120,26 +125,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-//        final int childCount = mChipGroup.getChildCount();
-//        List<String> tags = new ArrayList<>();
-//        for (int i = 0; i < childCount; i++) {
-//            Chip chip = (Chip) mChipGroup.getChildAt(i);
-//
-//            chip.setOnClickListener(v -> {
-//                if (chip.isChecked()) {
-//                    chip.setChecked(false);
-////                    TextView tv = (TextView) chip.getChildAt(0);
-//                    tags.remove(chip.getText().toString().toLowerCase(Locale.ROOT));
-//                    Log.d("MainActivity", String.valueOf(tags));
-//                } else {
-//                    chip.setChecked(true);
-////                    TextView tv = chip.getChildAt(0);
-//                    tags.add(chip.getText().toString().toLowerCase(Locale.ROOT));
-//                    Log.d("MainActivity", String.valueOf(tags));
-//                }
-//            });
-//        }
+        ActivityResultLauncher<Intent> mUpload = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        // Handle the Intent
+                        downloadUri = intent.getStringExtra("downloadUri");
+                        imgUrl.setText("image url :"+downloadUri);
+                    }
+                });
 
 
 //        create progress dialog
@@ -161,6 +155,12 @@ public class MainActivity extends AppCompatActivity {
 
             uploadData(title, description, venue, category, floatPrice, date, time);
         });
+        mUploadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mUpload.launch(new Intent(MainActivity.this, UploadActivity.class));
+            }
+        });
 
         mListBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ListActivity.class);
@@ -175,21 +175,21 @@ public class MainActivity extends AppCompatActivity {
     private void uploadData(String title, String description, String venue, String category, float price, String date, String time) {
 
         List<String> tags = new ArrayList<>();
-               for (int id : mChipGroup.getCheckedChipIds()){
-                   Chip chip = findViewById(id);
-                   tags.add(chip.getText().toString().toLowerCase(Locale.ROOT));
-                   Log.d("MainActivity", String.valueOf(tags));
-               }
+        for (int id : mChipGroup.getCheckedChipIds()) {
+            Chip chip = findViewById(id);
+            tags.add(chip.getText().toString().toLowerCase(Locale.ROOT));
+            Log.d("MainActivity", String.valueOf(tags));
+        }
 
 //        set title of progress bar
         pd.setTitle("Adding Data ....");
 //        show progress bar when user click save button
         pd.show();
 
-        String id = UUID.randomUUID().toString();
+//        String id = UUID.randomUUID().toString();
         Map<String, Object> doc = new HashMap<>();
 
-        doc.put("id", id);
+//        doc.put("id", id);
         doc.put("title", title);
         doc.put("info", description);
         doc.put("venue", venue);
@@ -199,16 +199,18 @@ public class MainActivity extends AppCompatActivity {
         doc.put("posted", new Timestamp(new Date()));
         doc.put("tags", tags);
         doc.put("rating", Double.parseDouble(rating));
-//        doc.put("imageResource", "https://firebasestorage.googleapis.com/v0/b/bucketlist-10f69.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=7b4942c7-a66e-4e13-bda5-bcc10c605207");
+        doc.put("imageResource", downloadUri);
         doc.put("price", price);
-        doc.put("category", category);
+        doc.put("category", category.toLowerCase(Locale.ROOT));
 
 //        add this to data
-        db.collection("documents")
+        db.collection("events")
                 .add(doc)
                 .addOnSuccessListener(documentReference -> {
                     pd.dismiss();
                     Toast.makeText(MainActivity.this, "Uploading...", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this, ListActivity.class));
+                    finish();
 
                 })
                 .addOnFailureListener(e -> {

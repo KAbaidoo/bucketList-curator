@@ -30,6 +30,22 @@
             android:hint="Description"
             android:inputType="textMultiLine|textCapSentences"
             android:minHeight="100dp" />
+        <TextView
+            android:id="@+id/tv_imageUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="image url:"
+          />
+        <Button
+            android:id="@+id/btn_upload"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="300dp"
+            app:strokeColor="?attr/colorPrimary"
+           android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Upload Banner Image" />
 
 
         <LinearLayout
