@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         doc.put("info", description);
         doc.put("venue", venue);
         doc.put("curator", "Eunyfred events");
-        doc.put("date", new Timestamp(date));
+        doc.put("dateTime", new Timestamp(date));
         doc.put("posted", new Timestamp(new Date()));
         doc.put("tags", tags);
         doc.put("rating", Double.parseDouble(rating));

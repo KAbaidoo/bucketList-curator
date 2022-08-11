@@ -1,6 +1,7 @@
 package com.example.bucketlistcurator;
 
 import com.google.firebase.firestore.DocumentId;
+import com.google.type.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,6 @@ public class Event {
     private long price;
     private String info;
     private String imageResource;
-    private String date;
     private String curator;
     private String category;
 
@@ -117,13 +117,8 @@ public class Event {
         this.imageResource = imageResource;
     }
 
-    public String getDate() {
-        return date;
-    }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+
 
     public String getCurator() {
         return curator;
