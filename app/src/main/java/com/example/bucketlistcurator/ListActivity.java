@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -79,26 +79,12 @@ public class ListActivity extends AppCompatActivity {
             pd.dismiss();
             if(task.isSuccessful()){
                 for (DocumentSnapshot doc : task.getResult()) {
-
-//                Event event = new Event(doc.getId(),
-//                        doc.getString("title"),
-//                        doc.getString("venue"),
-//                        doc.getString("time"),
-//                        doc.getDate("posted"),
-//                        doc.getDate("dateTime"),
-//                        ((List<String>) doc.get("tags")),
-//                        doc.getLong("rating"),
-//                        doc.getLong("price"),
-//                        "","","","","");
-//                eventList.add(event);
-
                     eventList.add(doc.toObject(Event.class));
-                    adapter = new CustomAdapter(ListActivity.this, eventList);
+                    adapter = new CustomAdapter(ListActivity.this, eventList, this);
                     mRecyclerView.setAdapter(adapter);
 
                 }
             }
-
 
 
 // some comment

@@ -114,25 +114,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/et_date"
+            <Button
+                android:id="@+id/btn_date"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:strokeColor="?attr/colorPrimary"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:hint="Date"
-                android:inputType="text" />
+                android:layout_gravity="center_horizontal"
+                android:text="Date:" />
 
-            <EditText
-                android:id="@+id/et_time"
+            <Button
+                android:id="@+id/btn_time"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:strokeColor="?attr/colorPrimary"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:hint="Time"
-                android:inputType="text" />
+                android:layout_gravity="center_horizontal"
+                android:text="Time:" />
         </LinearLayout>
 
 

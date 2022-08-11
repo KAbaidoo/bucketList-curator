@@ -1,5 +1,7 @@
 package com.example.bucketlistcurator;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +17,12 @@ public class CustomAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     ListActivity listActivity;
     List<Event> eventList;
+    private static Context mContext;
 
-
-    public CustomAdapter(ListActivity listActivity, List<Event> eventList) {
+    public CustomAdapter(ListActivity listActivity, List<Event> eventList,Context context) {
         this.listActivity = listActivity;
         this.eventList = eventList;
+        this.mContext = context;
     }
 
     @NonNull
@@ -35,18 +38,21 @@ public class CustomAdapter extends RecyclerView.Adapter<ViewHolder> {
             public void onItemClick(View view, int position) {
                 // called when user clicks item
 
-                //show data in toast
-                String title = eventList.get(position).getTitle();
-                String description = eventList.get(position).getInfo();
-               // Toast.makeText(listActivity, title+"\n"+description,Toast.LENGTH_SHORT).show();
-                Snackbar.make(view, title+"\n"+description , Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+               Event event =  eventList.get(position);
+                Intent scanIntent = new Intent(mContext, ScanTicketActivity.class);
+                scanIntent.putExtra("eventId", event.getId());
+                mContext.startActivity(scanIntent);
 
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
+                //show data in toast
+                String title = eventList.get(position).getTitle();
+                String description = eventList.get(position).getInfo();
                 // called when the user long clicks item
+                Snackbar.make(view, title+"\n"+description , Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
         return viewHolder;

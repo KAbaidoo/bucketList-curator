@@ -3,6 +3,8 @@
     package="com.example.bucketlistcurator">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- Permission to vibrate -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -12,14 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BucketListCurator">
         <activity
+            android:name=".ValidatedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ScanTicketActivity"
+            android:exported="false" />
+        <activity
             android:name=".UploadActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".ListActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,9 +33,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
-
-
+            android:exported="false" />
     </application>
 
 </manifest>
