@@ -16,6 +16,7 @@ import static android.Manifest.permission.VIBRATE;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 public class ScanTicketActivity extends AppCompatActivity {
     private ScannerLiveView camera;
     private TextView scannedTV;
