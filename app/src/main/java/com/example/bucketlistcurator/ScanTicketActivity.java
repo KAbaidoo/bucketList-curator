@@ -1,35 +1,21 @@
 package com.example.bucketlistcurator;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import eu.livotov.labs.android.camview.ScannerLiveView;
 import eu.livotov.labs.android.camview.scanner.decoder.zxing.ZXDecoder;
-
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.VIBRATE;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 public class ScanTicketActivity extends AppCompatActivity {
     private ScannerLiveView camera;
     private TextView scannedTV;
@@ -58,15 +44,14 @@ public class ScanTicketActivity extends AppCompatActivity {
             requestPermission();
         }
 
-        // initialize scannerLiveview and textview.
+        // initialize scannerLiveView and textview.
         scannedTV = findViewById(R.id.idTVscanned);
-        camera = (ScannerLiveView) findViewById(R.id.camview);
-
+        camera = findViewById(R.id.camview);
         camera.setScannerViewEventListener(new ScannerLiveView.ScannerViewEventListener() {
             @Override
             public void onScannerStarted(ScannerLiveView scanner) {
                 // method is called when scanner is started
-//                Toast.makeText(ScanTicketActivity.this, "Scanner Started", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -91,34 +76,22 @@ public class ScanTicketActivity extends AppCompatActivity {
                 scannedTV.setText(data);
 
                 sales.whereEqualTo("eventId",eventId).get().addOnCompleteListener(
-                        new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()){
-                                    for(QueryDocumentSnapshot doc : task.getResult()){
+                        task -> {
+                            if (task.isSuccessful()){
+                                for(QueryDocumentSnapshot doc : task.getResult()){
 
 
-                                        if (!data.equals("http://" + doc.get("eventId"))) {
-                                            Toast.makeText(ScanTicketActivity.this, "Validated! ", Toast.LENGTH_SHORT).show();
-                                            Intent i = new Intent(getApplicationContext(), ValidatedActivity.class);
-                                            startActivity(i);
-                                            finish();
-                                        } else {
-//
-
-                                        }
-
+                                    if (!data.equals("http://" + doc.get("eventId"))) {
+                                        Toast.makeText(ScanTicketActivity.this, "Validated! ", Toast.LENGTH_SHORT).show();
+                                        Intent i = new Intent(getApplicationContext(), ValidatedActivity.class);
+                                        startActivity(i);
+                                        finish();
                                     }
+
                                 }
                             }
                         }
-                ).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ScanTicketActivity.this, "Failed to validate! ", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+                ).addOnFailureListener(e -> Toast.makeText(ScanTicketActivity.this, "Failed to validate! ", Toast.LENGTH_SHORT).show());
 
 
 
@@ -133,7 +106,7 @@ public class ScanTicketActivity extends AppCompatActivity {
         // 0.5 is the area where we have
         // to place red marker for scanning.
         decoder.setScanAreaPercent(0.8);
-        // below method will set secoder to camera.
+        // below method will set decoder to camera.
         camera.setDecoder(decoder);
         camera.startScanner();
     }
@@ -165,17 +138,17 @@ public class ScanTicketActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // this method is called when user
         // allows the permission to use camera.
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0) {
-            boolean cameraaccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-            boolean vibrateaccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-            if (cameraaccepted && vibrateaccepted) {
+            boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            boolean vibrateAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+            if (cameraAccepted && vibrateAccepted) {
                 Toast.makeText(this, "Permission granted..", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Permission Denined \n You cannot use app without providing permission", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permission Denied \n You cannot use app without providing permission", Toast.LENGTH_SHORT).show();
             }
         }
     }

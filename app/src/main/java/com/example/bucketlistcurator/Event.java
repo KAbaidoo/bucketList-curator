@@ -1,8 +1,6 @@
 package com.example.bucketlistcurator;
 
 import com.google.firebase.firestore.DocumentId;
-import com.google.type.DateTime;
-
 import java.util.Date;
 import java.util.List;
 

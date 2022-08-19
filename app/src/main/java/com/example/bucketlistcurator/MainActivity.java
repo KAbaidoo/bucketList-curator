@@ -1,12 +1,12 @@
 package com.example.bucketlistcurator;
 
 
-import static java.lang.Long.getLong;
+
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -17,7 +17,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -37,9 +37,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,14 +44,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
+
 
 public class MainActivity extends AppCompatActivity {
 
     public static String TAG = ".MainActivity";
     //    Views
     EditText mTitle, mDescription, mVenue, mPrice;
-    static Button mDateBtn, mTimeBtn;
+    Button mDateBtn, mTimeBtn;
     TextView imgUrl;
     Button mSaveBtn, mListBtn, mUploadBtn;
     String category, rating, downloadUri;
@@ -135,19 +132,18 @@ public class MainActivity extends AppCompatActivity {
         mTimeBtn = findViewById(R.id.btn_time);
         mChipGroup = findViewById(R.id.chip_group);
 
-        mChipGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
-            @Override
-            public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+        mChipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
 
-            }
         });
         ActivityResultLauncher<Intent> mUpload = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent intent = result.getData();
                         // Handle the Intent
+                        assert intent != null;
                         downloadUri = intent.getStringExtra("downloadUri");
-                        imgUrl.setText("image url :" + downloadUri);
+                        String str = "image url :" + downloadUri;
+                        imgUrl.setText(str);
                     }
                 });
 
@@ -170,12 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
             uploadData(title, description, venue, category, floatPrice, date);
         });
-        mUploadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mUpload.launch(new Intent(MainActivity.this, UploadActivity.class));
-            }
-        });
+        mUploadBtn.setOnClickListener(v -> mUpload.launch(new Intent(MainActivity.this, UploadActivity.class)));
 
         mListBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ListActivity.class);
@@ -185,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Date and Time Picker
-        mDateBtn.setOnClickListener(v -> showDatePickerDialog(v));
-        mTimeBtn.setOnClickListener(v -> showTimePickerDialog(v));
+        mDateBtn.setOnClickListener(this::showDatePickerDialog);
+        mTimeBtn.setOnClickListener(this::showTimePickerDialog);
 
     }
 
@@ -240,9 +231,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Date and time Picker
-    public static class DatePickerFragment extends DialogFragment
+    public class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
@@ -269,28 +261,22 @@ public class MainActivity extends AppCompatActivity {
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MILLISECOND, 0);
 
-
-
-
-
-
             StringBuilder str = new StringBuilder();
             str.append("Date: ");
             str.append(day);
             str.append("-");
-            str.append(month);
+            str.append(month+1);
             str.append("-");
             str.append(year);
             mDateBtn.setText(str);
 
-
-
         }
     }
 
-    public static class TimePickerFragment extends DialogFragment
+    public class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker

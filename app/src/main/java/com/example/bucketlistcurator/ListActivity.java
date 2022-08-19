@@ -24,7 +24,7 @@ public class ListActivity extends AppCompatActivity {
     //Layout manager for recycler view
     RecyclerView.LayoutManager layoutManager;
 
-    //firestore instance
+    //Firestore instance
     FirebaseFirestore db;
     //adapter
     CustomAdapter adapter;
@@ -37,7 +37,7 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        // init firestore
+        // init Firestore
         db = FirebaseFirestore.getInstance();
         //initialize views
         mRecyclerView = findViewById(R.id.recycler_view);

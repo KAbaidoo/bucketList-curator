@@ -1,6 +1,5 @@
 package com.example.bucketlistcurator;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,12 +13,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -29,9 +25,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class UploadActivity extends AppCompatActivity {
-
-    // views for button
-    private Button btnSelect, btnUpload;
 
     // view for image view
     private ImageView imageView;
@@ -51,18 +44,15 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-//        ActionBar actionBar;
-//        actionBar = getSupportActionBar();
-//        ColorDrawable colorDrawable
-//                = new ColorDrawable(Color.parseColor("#0F9D58"));
-//        actionBar.setBackgroundDrawable(colorDrawable);
+
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle("Upload Banner Image");
 
         // initialise views
-        btnSelect = findViewById(R.id.btnChoose);
-        btnUpload = findViewById(R.id.btnUpload);
+        // views for button
+        Button btnSelect = findViewById(R.id.btnChoose);
+        Button btnUpload = findViewById(R.id.btnUpload);
         imageView = findViewById(R.id.imgView);
 
         // get the Firebase storage reference
@@ -70,20 +60,10 @@ public class UploadActivity extends AppCompatActivity {
         storageReference = storage.getReference();
 
         // on pressing btnSelect SelectImage() is called
-        btnSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SelectImage();
-            }
-        });
+        btnSelect.setOnClickListener(v -> SelectImage());
 
         // on pressing btnUpload uploadImage() is called
-        btnUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadImage();
-            }
-        });
+        btnUpload.setOnClickListener(v -> uploadImage());
     }
 
     // Select Image method
@@ -159,23 +139,17 @@ public class UploadActivity extends AppCompatActivity {
                 }
                 // Continue with the task to get the download URL
                 return ref.getDownloadUrl();
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        progressDialog.dismiss();
-                                Toast.makeText(UploadActivity.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
-                        Log.d("UploadActivity", downloadUri.toString());
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    progressDialog.dismiss();
+                            Toast.makeText(UploadActivity.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
+                    Log.d("UploadActivity", downloadUri.toString());
 
-                        Intent i = new Intent();
-                        i.putExtra("downloadUri", downloadUri.toString());
-                        setResult(Activity.RESULT_OK, i);;
-                        finish();
-                    } else {
-                        // Handle failures
-                        // ...
-                    }
+                    Intent i = new Intent();
+                    i.putExtra("downloadUri", downloadUri.toString());
+                    setResult(Activity.RESULT_OK, i);
+                    finish();
                 }
             });
 

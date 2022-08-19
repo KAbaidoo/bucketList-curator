@@ -15,20 +15,12 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         mView = itemView;
 
         //set click listener
-       itemView.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-                mClickListener.onItemClick(v, getAdapterPosition());
-           }
-       });
+       itemView.setOnClickListener(v -> mClickListener.onItemClick(v, getAdapterPosition()));
 
        //set long click listener
-        itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mClickListener.onItemLongClick(v, getAdapterPosition());
-                return true;
-            }
+        itemView.setOnLongClickListener(v -> {
+            mClickListener.onItemLongClick(v, getAdapterPosition());
+            return true;
         });
 
         //initialize views with model_layout
