@@ -20,7 +20,7 @@ Some of the features that was successfully implemented are listed below.
 ## Installation
 Clone this repository and import into **Android Studio**
 ```
-git clone https://github.com/KAbaidoo/BucketList.git
+git clone https://github.com/KAbaidoo/bucketList-curator.git
 
 ```
 ### Generating signed APK
